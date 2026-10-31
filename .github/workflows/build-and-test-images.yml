@@ -51,4 +51,4 @@ jobs:
 
       - name: Package OCI images
         if: github.event_name == 'push'
-        run: mvn -B -ntp -DskipTests -Pdev,ghcr -pl product-service,pricing-service spring-boot:build-image-no-fork
+        run: mvn -B -ntp -DskipTests -Dghcr.owner=${GITHUB_REPOSITORY_OWNER,,} -Pdev,ghcr -pl product-service,pricing-service spring-boot:build-image-no-fork
