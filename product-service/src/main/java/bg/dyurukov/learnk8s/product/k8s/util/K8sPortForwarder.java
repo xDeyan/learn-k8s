@@ -1,8 +1,8 @@
 package bg.dyurukov.learnk8s.product.k8s.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.boot.EnvironmentPostProcessor;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 
