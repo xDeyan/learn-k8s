@@ -1,4 +1,7 @@
-helm_yaml = helm('app', name = 'app')
+helm_yaml = helm(
+    'app',
+    name = 'app',
+    set=["pricing-service.image.repository=pricing-service", "product-service.image.repository=product-service"])
 gateway = read_yaml('./app/templates/gateway.yaml')
 gateway_port = gateway['spec']['listeners'][0]['port']
 

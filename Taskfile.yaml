@@ -191,7 +191,7 @@ tasks:
     desc: Starts up tilt
     cmds:
       - explorer http://localhost:10350 &
-      - tilt up --stream=false &
+      - tilt up --stream=false
 #      - defer: explorer http://localhost:10350
 
   tilt:down:

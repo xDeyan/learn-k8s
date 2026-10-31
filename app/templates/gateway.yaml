@@ -6,7 +6,6 @@ metadata:
     app: app-gateway
 spec:
   gatewayClassName: istio
-
   listeners:
     - name: http
       port: 8080

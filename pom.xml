@@ -269,11 +269,12 @@
 <!--                        Includes shell-->
                         <builder>paketobuildpacks/builder-jammy-base</builder>
                         <!-- Only way to override image name from command line -->
-                        <name>${imageName}${build.timestamp}</name>
+                        <name>${imageName}</name>
                         <env>
                             <BP_JVM_VERSION>${java.version}</BP_JVM_VERSION>
                             <BP_JVM_TYPE>JDK</BP_JVM_TYPE>
                             <BP_DEBUG_ENABLED>true</BP_DEBUG_ENABLED>
+                            <BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
 <!--                            <BP_LIVE_RELOAD_ENABLED>true</BP_LIVE_RELOAD_ENABLED>-->
 <!--                            <BPL_DEBUG_PORT>5005</BPL_DEBUG_PORT>-->
 <!--                    <NOPE, NOT TRUE>        sets it on the env to actually activate the debug  https://stackoverflow.com/questions/76294215/environment-properties-of-spring-boot-oci-image-arent-picked-up-by-cnb-launcher-->
