@@ -285,7 +285,9 @@
                             <!--                            <BP_JVM_JLINK_ENABLED>true</BP_JVM_JLINK_ENABLED>-->
                         </env>
                         <!-- Additional tags -->
-<!--                        <tags>${project.artifactId}:latest</tags>-->
+                        <tags>
+                            <tag>${project.artifactId}:latest</tag>
+                        </tags>
                     </image>
                 </configuration>
             </plugin>
