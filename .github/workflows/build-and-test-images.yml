@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - '.github/workflows/build-and-test-images.yml'
       - 'product-service/**'
       - 'pricing-service/**'
       - 'pom.xml'
