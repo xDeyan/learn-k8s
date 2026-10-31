@@ -1,0 +1,29 @@
+minio:
+  serviceAccount:
+    create: false
+
+results-cache:
+  enabled: false
+alertmanager:
+  enabled: false
+
+ingester:
+  replicas: 2
+  zoneAwareReplication:
+    enabled: false
+
+store_gateway:
+  zoneAwareReplication:
+    enabled: false
+
+ruler_query_scheduler:
+  replicas: 1
+
+querier:
+  replicas: 1
+
+query_frontend:
+  replicas: 1
+
+query_scheduler:
+  replicas: 1

@@ -1,0 +1,211 @@
+version: 3
+
+tasks:
+  all:setup:
+    cmds:
+#      - cmd: docker desktop start
+#      - cmd: minikube start
+      - cmd: helm repo update
+      - task: tofu:apply
+      - task: tilt:up
+
+  tofu:init:
+    desc: Initializes OpenTofu and installs the pinned providers
+    dir: terraform
+    cmd: tofu init -input=false
+
+  tofu:apply:crds:
+    internal: true
+    dir: terraform
+    cmd: >
+      tofu apply \
+        -target=module.infra.module.kafka.module.kafka_operator.module.kafka_crds \
+        -target=module.monitoring.module.otel_crds \
+        -auto-approve
+
+  tofu:apply:infra:
+    internal: true
+    dir: terraform
+    env:
+      TF_LOG: "DEBUG"
+    cmd: tofu apply -auto-approve
+
+  tofu:apply:
+    desc: Applies CRDs before the remaining infrastructure using OpenTofu
+    cmds:
+      - task: tofu:init
+      - task: tofu:apply:crds
+      - task: tofu:apply:infra
+
+  terraform:apply:
+    desc: Compatibility alias for tofu:apply
+    cmds:
+      - task: tofu:apply
+
+  all:down:
+    cmds:
+      - task: tilt:down
+      - task: lgtm:uninstall
+      - task: postgres:uninstall
+#      - cmd: minikube stop
+
+  istio:install:
+    desc: Installs Istio to the minikube cluster
+    cmds:
+      - echo "Adding istio Helm repo..."
+      - helm repo add istio https://istio-release.storage.googleapis.com/charts
+      - helm repo update
+      - echo "Installing the Istio base chart which contains cluster-wide Custom Resource Definitions (CRDs) which must be installed prior to the deployment of the Istio control plane..."
+      # helm upgrade --install (install if not exists) <release_name> <chart_name>
+      - helm upgrade --install istio-base istio/base --namespace istio-system --create-namespace --set defaultRevision=default --wait
+      - echo "Installing the Istio discovery chart which deploys the istiod service..."
+      - helm upgrade --install istiod istio/istiod -f k8s/values/istio-values.yaml --namespace istio-system --wait
+      - helm upgrade --install istio-gateway istio/gateway --namespace istio-system
+
+  gateway-api:install:
+    desc: Installs the Gateway API CRDs
+    cmd: kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/standard-install.yaml
+
+  postgres:install:
+    desc: Installs PostgreSQL via Helm chart
+    cmds:
+      # acts as create or update
+      - kubectl create namespace tools --dry-run=client -o yaml | kubectl apply -f -
+      - helm upgrade --install postgres bitnami/postgresql -f k8s/values/tools-values.yaml --namespace tools
+
+  postgres:uninstall:
+    cmds:
+      - helm uninstall postgres --namespace tools
+
+  postgres:pfw:
+    cmd: minikube service svc/postgres-postgresql
+
+  otel:install:
+    desc: Installs the Open Telemetry Operator
+    cmds:
+      # helm show values jetstack/cert-manager
+      - helm repo add jetstack https://charts.jetstack.io
+      - helm upgrade --install cert-manager jetstack/cert-manager --set crds.enabled=true --namespace cert-manager --create-namespace --wait
+      - helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts
+      - helm upgrade --install otel-operator open-telemetry/opentelemetry-operator --namespace default -f k8s/values/otel-values.yaml --wait
+
+  otel:uninstall:
+    desc: Installs the Open Telemetry Operator
+    cmds:
+      # helm show values jetstack/cert-manager
+      - helm uninstall otel-operator --wait
+
+  lgtm:install:
+    desc: Installs the LGTM (Loki, Grafana, Tempo & Mirmir) stack
+    cmds:
+      - helm repo add grafana https://grafana.github.io/helm-charts
+      - helm repo update
+      # /status/endpoints
+      # include dependency chart values as {alias}.{value-key}
+      # to uninstall helm uninstall lgtm --namespace monitoring
+      - helm upgrade --install lgtm grafana/lgtm-distributed --namespace monitoring --create-namespace -f k8s/values/lgtm-values.yaml
+
+  lgtm:uninstall:
+    cmd: helm uninstall lgtm --namespace monitoring
+
+  lgtm-stack:install:
+    cmds:
+      - task: grafana-repo:update
+      - task: loki:install
+      - task: tempo:install
+      - task: mimir:install
+      - task: grafana:install
+
+  lgtm-stack:uninstall:
+    cmds:
+      - task: loki:uninstall
+      - task: tempo:uninstall
+
+  grafana-repo:update:
+    cmds:
+      - helm repo add grafana https://grafana.github.io/helm-charts
+      - helm repo update
+
+  loki:install:
+    desc: Installs Loki chart
+    cmd: helm upgrade --install loki grafana/loki --version 6.26.0 --namespace monitoring --create-namespace -f k8s/values/lgtm/loki.yaml --wait
+
+  loki:uninstall:
+    desc: Uninstalls Loki chart
+    cmd: helm uninstall loki --namespace monitoring --wait
+
+  tempo:install:
+    desc: Installs Tempo chart
+    cmd: helm upgrade --install tempo grafana/tempo --version 1.18.2 --namespace monitoring --create-namespace -f k8s/values/lgtm/tempo.yaml --wait
+
+  tempo:uninstall:
+    desc: Uninstalls Tempo chart
+    cmd: helm uninstall tempo --namespace monitoring --wait
+
+  mimir:install:
+    desc: Installs Mimir chart
+    cmd: helm upgrade --install mimir grafana/mimir-distributed --version 5.6.0 --namespace monitoring --create-namespace -f k8s/values/lgtm/mimir.yaml --wait
+
+  mimir:uninstall:
+    desc: Uninstalls Mimir chart
+    cmd: helm uninstall mimir --namespace monitoring --wait
+
+  grafana:install:
+    desc: Installs grafana chart
+    cmd: helm upgrade --install grafana grafana/grafana --version 8.10.1 --namespace monitoring --create-namespace -f k8s/values/lgtm/grafana.yaml
+
+  # minikube service ingress-nginx-controller -n ingress-nginx
+  minikube:tunnel:
+    desc: |
+          Exposes the Istio GW Load Balancer's external IP (127.0.0.1), port 80. 
+          App will be available at http://localhost
+    cmd: minikube tunnel
+
+  pricing:build-image:
+    desc: Build pricing service and docker image
+    cmds:
+      - mvn package -DskipTests -f pricing-service/pom.xml -P dev
+      - mvn spring-boot:build-image -f pricing-service/pom.xml -P dev -DimageName=%EXPECTED_REF% -DskipTests
+
+  pricing:deploy:
+    desc: Deploys pricing service to k8s
+    cmds:
+      - echo "Cleaning previous image for pricing-service..." && minikube image rm pricing-service:latest
+      - echo "Loading pricing-service image in minikube..." && minikube image load pricing-service:latest
+      - kubectl apply -f pricing-service/k8s/deployment.yml
+
+  product:build-image:
+    desc: Build product service and docker image
+    cmds:
+      - mvn package -DskipTests -f product-service/pom.xml -P dev
+      - mvn spring-boot:build-image -f product-service/pom.xml -P dev -DimageName=%EXPECTED_REF% -DskipTests
+
+  product:deploy:
+    desc: Deploys product service to k8s
+    cmds:
+      - echo "Cleaning previous image for product-service..." && minikube image rm product-service:latest
+      - echo "Loading product-service image in minikube..." && minikube image load product-service:latest
+      - kubectl apply -f product-service/k8s/deployment.yml
+
+  tilt:up:
+    desc: Starts up tilt
+    cmds:
+      - explorer http://localhost:10350 &
+      - tilt up --stream=false &
+#      - defer: explorer http://localhost:10350
+
+  tilt:down:
+    desc: Stops tilt and deletes all k8s resources managed by Tilt
+    cmds:
+      - tilt down
+
+  helm:template:
+    cmd: >
+      helm template loki grafana-community/loki \
+        --debug \
+        --version 20.0.1 \
+        --namespace monitoring \
+        --values terraform/modules/monitoring/values/loki.yaml \
+#        --show-only templates/configmap.yaml \
+
+# To clean up go to Docker Desktop -> (?) -> Clean / Purge data

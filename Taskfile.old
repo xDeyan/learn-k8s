@@ -1,0 +1,3 @@
+# Legacy command moved out of the active Taskfile after PostgreSQL secret
+# management was moved to OpenTofu.
+- kubectl apply -f k8s/postgres-secret.yaml

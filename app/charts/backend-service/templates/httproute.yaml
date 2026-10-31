@@ -1,0 +1,52 @@
+{{ if .Values.httpRoute.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ .Chart.Name }}-route
+spec:
+  parentRefs:
+    - name: app-gateway
+
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /services/{{ include "contextPath" . }}
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /{{ include "contextPath" . }}
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Forwarded-Prefix
+                value: /services/{{ include "contextPath" . }}
+              - name: X-Forwarded-Port
+                value: "8080"
+      backendRefs:
+        - name: {{ .Chart.Name }}
+          port: 80
+
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /services/{{ include "contextPath" . }}/actuator
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /{{ include "contextPath" . }}/actuator
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Forwarded-Prefix
+                value: /services/{{ include "contextPath" . }}
+              - name: X-Forwarded-Port
+                value: "8080"
+      backendRefs:
+        - name: {{ .Chart.Name }}
+          port: 9090
+{{- end }}

@@ -1,0 +1,29 @@
+pricing-service:
+  image:
+    repository: ghcr.io/xdeyan/pricing-service
+    tag: "0.0.0" # {"$imagepolicy": "flux-system:pricing-service:tag"}
+  httpRoute:
+    enabled: true
+  env:
+    SERVER_SERVLET_CONTEXTPATH: "/pricing-service"
+  readinessProbe:
+    httpGet:
+      path: "/pricing-service/actuator/health/readiness"
+  livenessProbe:
+    httpGet:
+      path: "/pricing-service/actuator/health/liveness"
+
+product-service:
+  image:
+    repository: ghcr.io/xdeyan/product-service
+    tag: "0.0.0" # {"$imagepolicy": "flux-system:product-service:tag"}
+  httpRoute:
+    enabled: true
+  env:
+    SERVER_SERVLET_CONTEXTPATH: "/product-service"
+  readinessProbe:
+    httpGet:
+      path: "/product-service/actuator/health/readiness"
+  livenessProbe:
+    httpGet:
+      path: "/product-service/actuator/health/liveness"

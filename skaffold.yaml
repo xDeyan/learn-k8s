@@ -1,0 +1,126 @@
+apiVersion: skaffold/v4beta12
+kind: Config
+metadata:
+  name: learn-k-s
+
+build:
+  artifacts:
+    - image: pricing-service
+      custom:
+        buildCommand: mvn spring-boot:build-image -f pricing-service/pom.xml -P dev -DimageName=%IMAGE% -DskipTests -X
+#    - image: product-service
+#      custom:
+#        buildCommand: mvn spring-boot:build-image -f product-service/pom.xml -P dev -DimageName=%IMAGE% -DskipTests -X
+
+
+manifests:
+  helm:
+    releases:
+      - name: pricing-service
+        chartPath: ./app
+        skipBuildDependencies: true
+#        dependsOn:
+#          - localstack
+#        https://skaffold.dev/docs/deployers/helm/#image-configuration
+        setValueTemplates:
+          pricing-service.image.repository: "{{.IMAGE_REPO_pricing_service}}"
+          pricing-service.image.tag: "{{.IMAGE_TAG_pricing_service}}@{{.IMAGE_DIGEST_pricing_service}}"
+
+  hooks:
+    before:
+      - host:
+          command: [ "terraform", "-chdir=terraform", "init" ]
+      - host:
+          #          tf -chdir=terraform apply \
+          #               -target=module.infra.module.kafka.module.kafka_operator.module.kafka_crds \
+          #               -target=module.monitoring.module.otel_crds \
+          #               -auto-approve
+          command:
+            - terraform
+            - -chdir=terraform
+            - apply
+            - -target=module.infra.module.kafka.module.kafka_operator.module.kafka_crds
+            - -target=module.monitoring.module.otel_crds
+            - -auto-approve
+      - host:
+          #           tf -chdir=terraform apply -auto-approve
+          command: [ "terraform", "-chdir=terraform", "apply", "-auto-approve" ]
+
+
+#deploy:
+##  statusCheckDeadlineSeconds:
+#  statusCheck: false
+#  hooks:
+#    before:
+#      - host:
+#          command: [ "terraform", "-chdir=terraform", "init" ]
+#      - host:
+#          #          tf -chdir=terraform apply \
+#          #               -target=module.infra.module.kafka.module.kafka_operator.module.kafka_crds \
+#          #               -target=module.monitoring.module.otel_crds \
+#          #               -auto-approve
+#          command:
+#            - terraform
+#            - -chdir=terraform
+#            - apply
+#            - -target=module.infra.module.kafka.module.kafka_operator.module.kafka_crds
+#            - -target=module.monitoring.module.otel_crds
+#            - -auto-approve
+#      - host:
+#          #           tf -chdir=terraform apply -auto-approve
+#          command: [ "terraform", "-chdir=terraform", "apply", "-auto-approve" ]
+#
+#
+#  helm:
+##    flags:
+##      global:
+##        - --ignore-not-found
+##      install:
+##        - "--include-crds"
+#    releases:
+##      - name: cert-manager
+##        remoteChart: jetstack/cert-manager
+##        namespace: cert-manager
+##        createNamespace: true
+##        recreatePods: false
+##        skipBuildDependencies: false
+##        skipTests: true
+##        useHelmSecrets: false
+##        setValues:
+##          crds.enabled: true
+##        wait: false
+##      - name: postgres
+##        remoteChart: bitnami/postgresql
+##        namespace: tools
+##        createNamespace: true
+##        setValues:
+##          auth:
+##            existingSecret: postgres-secret
+##      - name: strimzi
+##        remoteChart: strimzi/strimzi-kafka-operator
+##        namespace: tools
+##      - name: localstack
+##        remoteChart: localstack/localstack
+##        namespace: tools
+##        createNamespace: true
+##        setValues:
+##          debug: true
+##        recreatePods: false
+##        skipBuildDependencies: false
+##        skipTests: false
+##        useHelmSecrets: false
+##        overrides:
+##          extraEnvVars:
+##            - name: LOCALSTACK_AUTH_TOKEN
+##              value: ls-VAdu3457-Ribu-2511-zEfu-SOzAtInA6fcf
+##        wait: true
+#      - name: app
+#        namespace: default
+#        chartPath: ./app
+#        skipBuildDependencies: true
+#        #        https://skaffold.dev/docs/deployers/helm/#image-configuration
+#        setValueTemplates:
+#          pricing-service.image.repository: "{{.IMAGE_REPO_pricing_service}}"
+#          pricing-service.image.tag: "{{.IMAGE_TAG_pricing_service}}@{{.IMAGE_DIGEST_pricing_service}}"
+#        valuesFiles:
+#          - ./k8s/values/pricing-service.yaml

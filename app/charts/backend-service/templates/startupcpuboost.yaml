@@ -1,0 +1,20 @@
+apiVersion: autoscaling.x-k8s.io/v1alpha1
+kind: StartupCPUBoost
+metadata:
+  name: {{ .Chart.Name }}-startup-cpu-boost
+  namespace: {{ .Release.Namespace }}
+selector:
+  matchLabels:
+    app: {{ .Chart.Name }}
+spec:
+  resourcePolicy:
+    containerPolicies:
+      - matchContainers:
+          type: ExactName
+          value: {{ .Chart.Name }}
+        percentageIncrease:
+          value: 50
+  durationPolicy:
+    podCondition:
+      type: Ready
+      status: "True"

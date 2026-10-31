@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    app: {{ .Chart.Name }}
+  annotations:
+    configmap.reloader.stakater.com/auto: "true"
+    secret.reloader.stakater.com/reload: "postgres-secret"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      name: {{ .Chart.Name }}
+      labels:
+        app: {{ .Chart.Name }}
+      annotations:
+        instrumentation.opentelemetry.io/inject-java: "true"
+        checksum/{{ include "configmap.name" . }}: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: {{ include "image" . | quote }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- include "resources" . | nindent 10 }}
+          ports:
+            - name: http
+              containerPort: 8080
+            - name: management
+              containerPort: 9090
+            - name: debug
+              containerPort: 5005
+          {{- include "readinessProbe" . | nindent 10 }}
+          {{- include "livenessProbe" . | nindent 10 }}
+
+          envFrom:
+            - configMapRef:
+                name: common-configmap
+          {{- include "configmap.ref" . | nindent 12 }}
+          env:
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: username
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: password
+            - name: BPE_DEBUG_ENABLED
+              value: "true"
+          securityContext:
+            runAsUser: 0
+      restartPolicy: Always

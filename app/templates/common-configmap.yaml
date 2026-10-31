@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: common-configmap
+data:
+  SPRINGDOC_SHOWACTUATOR: "true"
+  SPRINGDOC_SWAGGERUI_CONFIGURL: "/services/${spring.application.name}/v3/api-docs/swagger-config"
+  SPRINGDOC_SWAGGERUI_URL: "/services/${spring.application.name}/v3/api-docs"
+  SPRING_KAFKA_BOOTSTRAPSERVERS: "platform-kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
+  SPRING_KAFKA_JAAS_OPTIONS_USERNAME: "kafka-admin"
+  SPRING_KAFKA_JAAS_OPTIONS_PASSWORD: "change-me"
+  # correlationId is a conversion rule defined in org\springframework\boot\logging\logback\defaults.xml
+  # the values in the {} are an option list for instantiating the converter
+  # the args are delegated to org.springframework.boot.logging.CorrelationIdFormatter
+  LOGGING_PATTERN_CORRELATION: "%correlationId{trace_id(32),span_id(16)}"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-postgresql.tools.svc.cluster.local/postgres"
+  BPL_DEBUG_ENABLED: "true"
+  BPL_DEBUG_PORT: "5005"
+
+  SPRING_CLOUD_AWS_ENDPOINT: "http://localstack.tools.svc.cluster.local:4566"
+  SPRING_CLOUD_AWS_REGION_STATIC: "eu-central-1"
+  SPRING_CLOUD_AWS_S3_PATHSTYLEACCESSENABLED: "true"
+  SPRING_CLOUD_AWS_CREDENTIALS_ACCESSKEY: "dfsdfsdf"
+  SPRING_CLOUD_AWS_CREDENTIALS_SECRETKEY: "dfsdfsdf"

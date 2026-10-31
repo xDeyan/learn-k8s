@@ -1,0 +1,133 @@
+management:
+  server:
+    base-path: /${spring.application.name}
+    port: 9090
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+server:
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: product-service
+
+  docker:
+    compose:
+      lifecycle-management: start_and_stop
+
+  main:
+    allow-circular-references: true
+
+  datasource:
+    hikari:
+      auto-commit: false
+      data-source-properties:
+        '[reWriteBatchedInserts]': true
+  #    type: org.postgresql.ds.PGSimpleDataSource
+
+  jpa:
+    open-in-view: false
+
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_versioned_data: true
+          batch_size: 4000
+        connection:
+          provider_disables_autocommit: true
+        query:
+          fail_on_pagination_over_collection_fetch: true
+
+#logging:
+#  expect-correlation-id: true
+#  pattern:
+    # correlationId is a conversion rule defined in org\springframework\boot\logging\logback\defaults.xml
+    # the values in the {} are an option list for instantiating the converter
+    # the args are delegated to org.springframework.boot.logging.CorrelationIdFormatter
+  kafka:
+    admin:
+      auto-create: false
+      security:
+        protocol: SASL_PLAINTEXT
+      properties:
+        '[sasl.mechanism]': PLAIN
+
+    producer:
+      security:
+        protocol: SASL_PLAINTEXT
+      properties:
+        '[sasl.mechanism]': PLAIN
+
+    jaas:
+      enabled: true
+      login-module: org.apache.kafka.common.security.plain.PlainLoginModule
+
+  cloud:
+    stream:
+      bindings:
+        bingus-out:
+          destination: account
+          producer:
+            use-native-encoding: true
+      kafka:
+        bindings:
+          bingus-out:
+            producer:
+              configuration:
+                '[value.serializer]': org.apache.kafka.common.serialization.StringSerializer
+      output-bindings: bingus-out
+
+  http:
+    clients:
+      connect-timeout:
+      read-timeout: 10s
+    serviceclient:
+      pricing:
+        base-url: http://pricing-service
+  devtools:
+    remote:
+      secret: bingus
+
+#    aws:
+#      endpoint: http://localstack.tools.svc.cluster.local:4566
+#      region:
+#        static: eu-central-1
+#      s3:
+#        path-style-access-enabled: true
+#      credentials:
+#        access-key: dfsdfsdf
+#        secret-key: dfsdfsdf
+
+#    correlation: '%correlationId{trace_id(32),span_id(16)}'
+#    correlation: '%esb(trace_id=%mdc{trace_id}, span_id=%mdc{span_id})'
+#    correlation: 'trace_id(32),span_id(16)'
+logging:
+  level:
+    sql: debug
+    transaction: trace
+    datasource: trace
+
+  group:
+    datasource:
+      - net.ttddyy.dsproxy.listener.logging
+    transaction:
+      - org.springframework.transaction
+      - org.springframework.orm.jpa
+      - org.hibernate.engine.transaction.internal.TransactionImpl
+      - com.zaxxer.hikari
+
+decorator:
+  datasource:
+    datasource-proxy:
+      format-sql: true
+
+springdoc:
+  show-actuator: true
+  swagger-ui:
+    disable-swagger-default-url: true

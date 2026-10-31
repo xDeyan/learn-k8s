@@ -1,0 +1,24 @@
+image:
+  repository: nginx
+  tag: ""
+  pullPolicy: IfNotPresent
+
+httpRoute:
+  enabled: false
+
+resources:
+  limits:
+    cpu: "700m"
+    memory: "1Gi"
+
+readinessProbe:
+  httpGet:
+    port: management
+  initialDelaySeconds: 30
+  failureThreshold: 15
+  periodSeconds: 8
+
+livenessProbe:
+  httpGet:
+    port: management
+  initialDelaySeconds: 30

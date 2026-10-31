@@ -1,0 +1,10 @@
+traces:
+  otlp:
+    grpc:
+      enabled: true
+      receiverConfig:
+        endpoint: 0.0.0.0:4317
+
+ingester:
+  autoscaling:
+    enabled: true

@@ -1,0 +1,3 @@
+pricing-service:
+  name: pricing-service
+  contextPath: "/pricing-service"

@@ -1,0 +1,47 @@
+{{- define "image" }}
+{{- if and .Values.image.repository .Values.image.tag }}
+{{- .Values.image.repository }}:{{ .Values.image.tag }}
+{{- else }}
+{{- .Chart.Name }}:latest
+{{- end}}
+{{- end }}
+
+{{- define "configmap.name" }}
+{{- .Chart.Name }}-configmap
+{{- end }}
+
+{{- define "configmap.ref" }}
+{{ if .Values.env -}}
+- configMapRef:
+    name: {{ include "configmap.name" . }}
+{{- end }}
+{{- end}}
+
+
+
+{{- define "resources" }}
+{{ if .Values.resources -}}
+resources:
+{{ toYaml .Values.resources | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "readinessProbe" }}
+{{ if .Values.readinessProbe.httpGet.path -}}
+readinessProbe:
+{{ toYaml .Values.readinessProbe | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "livenessProbe" }}
+{{ if .Values.livenessProbe -}}
+livenessProbe:
+{{ toYaml .Values.livenessProbe | nindent 2 }}
+{{- end }}
+{{- end }}
+
+{{- define "contextPath" }}
+{{- if (.Values.env).SERVER_SERVLET_CONTEXTPATH }}
+{{- trimPrefix "/" .Values.env.SERVER_SERVLET_CONTEXTPATH -}}
+{{- end }}
+{{- end }}

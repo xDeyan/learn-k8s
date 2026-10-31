@@ -1,0 +1,7 @@
+manager:
+#  collectorImage:
+#    repository: otel/opentelemetry-collector-k8s
+  autoInstrumentationImage:
+    java:
+      repository: "ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-java"
+      tag: "2.19.0"

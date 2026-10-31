@@ -1,0 +1,69 @@
+management:
+  server:
+    base-path: /${spring.application.name}
+    port: 9090
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+
+server:
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: pricing-service
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
+
+  docker:
+    compose:
+      enabled: false
+  mvc:
+    problemdetails:
+      enabled: true
+
+  kafka:
+    admin:
+      auto-create: false
+      security:
+        protocol: SASL_PLAINTEXT
+      properties:
+        '[sasl.mechanism]': PLAIN
+
+    consumer:
+      group-id: ${spring.application.name}
+      security:
+        protocol: SASL_PLAINTEXT
+      properties:
+        '[sasl.mechanism]': PLAIN
+
+    jaas:
+      enabled: true
+      login-module: org.apache.kafka.common.security.plain.PlainLoginModule
+
+  cloud:
+    function:
+      definition: accountListener
+    stream:
+      function:
+        bindings:
+          accountListener-in-0: account-listener-input
+      bindings:
+        account-listener-input:
+          destination: account
+          group: ${spring.application.name}
+  web:
+    error:
+      include-message: always
+
+logging:
+  pattern:
+    correlation: '[trace_id=%mdc{trace_id}, span_id=%mdc{span_id}] '
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url:
