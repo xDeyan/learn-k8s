@@ -6,6 +6,11 @@ metadata:
     app: app-gateway
 spec:
   gatewayClassName: istio
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: app-gateway-options
   listeners:
     - name: http
       port: 8080
@@ -13,3 +18,17 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-gateway-options
+data:
+  service: |
+    spec:
+      type: NodePort
+      ports:
+        - name: http
+          port: 8080
+          nodePort: 30001

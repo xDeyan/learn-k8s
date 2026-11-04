@@ -2,15 +2,12 @@ helm_yaml = helm(
     'app',
     name = 'app',
     set=["pricing-service.image.repository=pricing-service", "product-service.image.repository=product-service"])
-gateway = read_yaml('./app/templates/gateway.yaml')
-gateway_port = gateway['spec']['listeners'][0]['port']
 
 k8s_yaml(helm_yaml)
 
 local_resource(
-    name = 'minikube-tunnel',
-    serve_cmd = 'minikube tunnel',
-    links = [link('http://localhost:' + str(gateway_port), 'Application gateway')],
+    name = 'urls',
+    links = [link('http://localhost:30001/services/pricing-service/swagger-ui/index.html', 'Application gateway')],
     labels = ['infrastructure'],
 )
 

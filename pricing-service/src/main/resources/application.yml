@@ -56,6 +56,9 @@ spring:
         account-listener-input:
           destination: account
           group: ${spring.application.name}
+          consumer:
+            use-native-decoding: true
+
   web:
     error:
       include-message: always
@@ -66,4 +69,3 @@ logging:
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
-    url:

@@ -1,0 +1,101 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: learn-k8s
+  namespace: flux-system
+spec:
+  interval: 1m
+  url: https://github.com/xDeyan/learn-k8s.git
+  ref:
+    branch: main
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: app
+  namespace: flux-system
+spec:
+  interval: 5m
+  releaseName: app
+  targetNamespace: default
+  install:
+    createNamespace: true
+  chart:
+    spec:
+      chart: ./app
+      sourceRef:
+        kind: GitRepository
+        name: learn-k8s
+        namespace: flux-system
+      interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: pricing-service
+  namespace: flux-system
+spec:
+  image: ghcr.io/xdeyan/pricing-service
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageRepository
+metadata:
+  name: product-service
+  namespace: flux-system
+spec:
+  image: ghcr.io/xdeyan/product-service
+  interval: 1m
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: pricing-service
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: pricing-service
+  policy:
+    semver:
+      range: ">=0.0.0-0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImagePolicy
+metadata:
+  name: product-service
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: product-service
+  policy:
+    semver:
+      range: ">=0.0.0-0"
+---
+apiVersion: image.toolkit.fluxcd.io/v1
+kind: ImageUpdateAutomation
+metadata:
+  name: app-images
+  namespace: flux-system
+spec:
+  interval: 10m
+  policyChangeDelay: 2m
+  sourceRef:
+    kind: GitRepository
+    name: learn-k8s
+  git:
+    checkout:
+      ref:
+        branch: main
+    push:
+      branch: main
+    commit:
+      author:
+        name: fluxcdbot
+        email: fluxcdbot@users.noreply.github.com
+      messageTemplate: |
+        Update application images
+
+        {{ .Changed.Summary }}
+  update:
+    strategy: Setters
+    path: ./app

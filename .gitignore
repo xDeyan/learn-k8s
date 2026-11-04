@@ -34,6 +34,7 @@ build/
 
 ### OpenTofu ###
 **/.terraform/
+**/.terraform/modules/
 *.tfstate
 *.tfstate.*
 *.tfplan
