@@ -42,7 +42,7 @@ class ScheduledPricer {
 
             log.info("Prices fetched : {}", price);
         } catch (Exception exception) {
-            log.error("Error connecting to pricing service: ", exception);
+            log.error("Error connecting to pricing-service: ", exception);
         }
     }
 
