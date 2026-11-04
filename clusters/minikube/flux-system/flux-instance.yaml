@@ -18,6 +18,7 @@ spec:
     interval: 1m
   components:
     - source-controller
+    - kustomize-controller
     - helm-controller
     - notification-controller
     - image-reflector-controller
