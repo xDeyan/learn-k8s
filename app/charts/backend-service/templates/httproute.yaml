@@ -23,6 +23,8 @@ spec:
             set:
               - name: X-Forwarded-Prefix
                 value: /services/{{ include "contextPath" . }}
+              - name: X-Forwarded-Port
+                value: "30001"
       backendRefs:
         - name: {{ .Chart.Name }}
           port: 80
@@ -42,6 +44,8 @@ spec:
             set:
               - name: X-Forwarded-Prefix
                 value: /services/{{ include "contextPath" . }}
+              - name: X-Forwarded-Port
+                value: "30001"
       backendRefs:
         - name: {{ .Chart.Name }}
           port: 9090
