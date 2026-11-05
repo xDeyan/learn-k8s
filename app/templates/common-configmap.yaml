@@ -3,6 +3,8 @@ kind: ConfigMap
 metadata:
   name: common-configmap
 data:
+  SERVER_FORWARDHEADERSSTRATEGY: "framework"
+  SPRING_MVC_FORWARDEDHEADERS_USEFORWARDEDPREFIX: "true"
   SPRINGDOC_SHOWACTUATOR: "true"
   SPRINGDOC_SWAGGERUI_CONFIGURL: "/services/${spring.application.name}/v3/api-docs/swagger-config"
   SPRINGDOC_SWAGGERUI_URL: "/services/${spring.application.name}/v3/api-docs"
