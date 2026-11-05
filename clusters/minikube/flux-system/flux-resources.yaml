@@ -25,11 +25,12 @@ spec:
   chart:
     spec:
       chart: ./app
+      interval: 1m
+      reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: learn-k8s
         namespace: flux-system
-      interval: 1m
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
