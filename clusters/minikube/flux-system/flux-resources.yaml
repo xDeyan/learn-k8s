@@ -24,13 +24,16 @@ spec:
     createNamespace: true
   chart:
     spec:
-      chart: ./app
       interval: 1m
       reconcileStrategy: Revision
       sourceRef:
         kind: GitRepository
         name: learn-k8s
         namespace: flux-system
+      chart: ./app
+      valuesFiles:
+        - app/values.yaml
+        - clusters/minikube/values.yaml
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository

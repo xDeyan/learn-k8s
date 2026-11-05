@@ -1,0 +1,8 @@
+# Minikube-specific Helm overrides.
+#
+# Values in this file are merged after app/values.yaml and take precedence over
+# the chart defaults. Keep image tags in app/values.yaml so Flux image
+# automation can continue updating them.
+
+global:
+  deploymentMode: local

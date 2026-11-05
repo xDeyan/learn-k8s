@@ -1,3 +1,6 @@
+global:
+  deploymentMode: default
+
 pricing-service:
   image:
     repository: ghcr.io/xdeyan/pricing-service

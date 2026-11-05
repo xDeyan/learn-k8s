@@ -6,11 +6,13 @@ metadata:
     app: app-gateway
 spec:
   gatewayClassName: istio
+{{- if eq .Values.global.deploymentMode "local" }}
   infrastructure:
     parametersRef:
       group: ""
       kind: ConfigMap
       name: app-gateway-options
+{{- end }}
   listeners:
     - name: http
       port: 8080
@@ -19,6 +21,7 @@ spec:
         namespaces:
           from: Same
 
+{{- if eq .Values.global.deploymentMode "local" }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -32,3 +35,4 @@ data:
         - name: http
           port: 8080
           nodePort: 30001
+{{- end }}
