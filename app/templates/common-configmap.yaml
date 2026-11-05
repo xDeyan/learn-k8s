@@ -1,3 +1,4 @@
+{{- define "app.common-configmap" -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -24,3 +25,6 @@ data:
   SPRING_CLOUD_AWS_S3_PATHSTYLEACCESSENABLED: "true"
   SPRING_CLOUD_AWS_CREDENTIALS_ACCESSKEY: "dfsdfsdf"
   SPRING_CLOUD_AWS_CREDENTIALS_SECRETKEY: "dfsdfsdf"
+{{- end -}}
+
+{{ include "app.common-configmap" . }}

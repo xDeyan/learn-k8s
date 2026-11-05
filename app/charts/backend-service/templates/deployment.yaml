@@ -19,6 +19,7 @@ spec:
         app: {{ .Chart.Name }}
       annotations:
         instrumentation.opentelemetry.io/inject-java: "true"
+        checksum/common-configmap: {{ include "app.common-configmap" . | sha256sum | quote }}
         checksum/{{ include "configmap.name" . }}: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum | quote }}
     spec:
       containers:
