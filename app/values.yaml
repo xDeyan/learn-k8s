@@ -15,6 +15,7 @@ pricing-service:
   livenessProbe:
     httpGet:
       path: "/pricing-service/actuator/health/liveness"
+
 product-service:
   image:
     repository: ghcr.io/xdeyan/product-service

@@ -10,6 +10,7 @@ spec:
     branch: main
   secretRef:
     name: github-auth
+
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -34,6 +35,7 @@ spec:
       valuesFiles:
         - app/values.yaml
         - clusters/minikube/values.yaml
+
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
@@ -43,6 +45,7 @@ metadata:
 spec:
   image: ghcr.io/xdeyan/pricing-service
   interval: 1m
+
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageRepository
@@ -52,6 +55,7 @@ metadata:
 spec:
   image: ghcr.io/xdeyan/product-service
   interval: 1m
+
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
@@ -64,6 +68,7 @@ spec:
   policy:
     semver:
       range: ">=0.0.0-0"
+
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
@@ -76,6 +81,7 @@ spec:
   policy:
     semver:
       range: ">=0.0.0-0"
+
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImageUpdateAutomation
