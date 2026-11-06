@@ -1,6 +1,7 @@
 name: Build and test images
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -13,6 +14,7 @@ on:
 permissions:
   contents: read
   packages: write
+  pull-requests: write
 
 jobs:
   build-and-test:
@@ -35,11 +37,29 @@ jobs:
       - name: Test
         run: mvn -B -ntp test
 
+      - name: Publish unit test results to pull request
+        if: always() && github.event_name == 'pull_request' && hashFiles('**/target/surefire-reports/TEST-*.xml') != ''
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          comment_title: Unit test results
+          files: '**/target/surefire-reports/TEST-*.xml'
+          comment_mode: always
+          check_run: false
+
       - name: Package
         run: mvn -B -ntp package -DskipTests
 
       - name: Integration Test
         run: mvn -B -ntp verify
+
+      - name: Publish integration test results to pull request
+        if: always() && github.event_name == 'pull_request' && hashFiles('**/target/failsafe-reports/TEST-*.xml') != ''
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        with:
+          comment_title: Integration test results
+          files: '**/target/failsafe-reports/TEST-*.xml'
+          comment_mode: always
+          check_run: false
 
       - name: Log in to GHCR
         if: github.event_name == 'push'
