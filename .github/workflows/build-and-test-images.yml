@@ -38,7 +38,7 @@ jobs:
         run: mvn -B -ntp test
 
       - name: Publish unit test results to pull request
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && hashFiles('**/target/surefire-reports/*.xml') != ''
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           comment_title: Unit test results
@@ -52,7 +52,7 @@ jobs:
         run: mvn -B -ntp verify
 
       - name: Publish integration test results to pull request
-        if: always() && github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request' && hashFiles('**/target/failsafe-reports/*.xml') != ''
         uses: EnricoMi/publish-unit-test-result-action@v2
         with:
           comment_title: Integration test results
