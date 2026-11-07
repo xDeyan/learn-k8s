@@ -34,7 +34,9 @@ spec:
       chart: ./app
       valuesFiles:
         - app/values.yaml
-        - clusters/minikube/values.yaml
+        - clusters/minikube/values/common.yaml
+        - clusters/minikube/values/pricing-service.yaml
+        - clusters/minikube/values/poduct-service.yaml
 
 ---
 apiVersion: image.toolkit.fluxcd.io/v1
@@ -110,4 +112,4 @@ spec:
         {{ .Changed.Summary }}
   update:
     strategy: Setters
-    path: ./app
+    path: ./clusters/minikube/values

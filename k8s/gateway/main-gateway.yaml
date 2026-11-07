@@ -16,6 +16,7 @@ data:
       ports:
         - name: http
           port: 8080
+          targetPort: 8080
           nodePort: 30001
 
 ---
@@ -71,13 +72,20 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /observability
+            value: /observability/grafana
       filters:
         - type: URLRewrite
           urlRewrite:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: /
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Forwarded-Prefix
+                value: /observability
+              - name: X-Forwarded-Port
+                value: "30001"
       backendRefs:
         - name: observability-gateway-istio
           namespace: observability
@@ -103,8 +111,14 @@ spec:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: /
+        - type: RequestHeaderModifier
+          requestHeaderModifier:
+            set:
+              - name: X-Forwarded-Prefix
+                value: /tools
+              - name: X-Forwarded-Port
+                value: "30001"
       backendRefs:
         - name: tools-gateway-istio
           namespace: tools
           port: 9000
-
