@@ -31,13 +31,10 @@ class ScheduledPricer {
 
     private final StreamBridge streamBridge;
     private final S3Template s3Template;
-    private final List<CallLogger> callLoggers;
 
-    @Scheduled(fixedRate = 5_000)
+    @Scheduled(fixedRate = 20_000)
     void scheduled() {
         try {
-            callLoggers.forEach(callLogger -> callLogger.logCall());
-
             var price = pricingClient.findPriceByProductId(getRandomProductId());
 
             log.info("Prices fetched : {}", price);
@@ -46,7 +43,7 @@ class ScheduledPricer {
         }
     }
 
-    @Scheduled(fixedRate = 5_000)
+    @Scheduled(fixedRate = 60_000)
     void bingus() {
         streamBridge.send("bingus-out", "bingus");
 
