@@ -1,3 +1,3 @@
 product-service:
   image:
-    tag: "0.0.1-SNAPSHOT-21" # {"$imagepolicy": "flux-system:product-service:tag"}
+    tag: "0.0.1-SNAPSHOT-22" # {"$imagepolicy": "flux-system:product-service:tag"}
