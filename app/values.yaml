@@ -3,7 +3,7 @@ global:
 pricing-service:
   image:
     repository: ghcr.io/xdeyan/pricing-service
-    tag: "0.0.1-SNAPSHOT-18" # {"$imagepolicy": "flux-system:pricing-service:tag"}
+    tag: "0.0.1-SNAPSHOT-20" # {"$imagepolicy": "flux-system:pricing-service:tag"}
   httpRoute:
     enabled: true
   env:
@@ -17,7 +17,7 @@ pricing-service:
 product-service:
   image:
     repository: ghcr.io/xdeyan/product-service
-    tag: "0.0.1-SNAPSHOT-18" # {"$imagepolicy": "flux-system:product-service:tag"}
+    tag: "0.0.1-SNAPSHOT-20" # {"$imagepolicy": "flux-system:product-service:tag"}
   httpRoute:
     enabled: true
   env:
