@@ -7,6 +7,11 @@ metadata:
     app: observability-gateway
 spec:
   gatewayClassName: istio
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: observability-gateway-options
 
   listeners:
     - name: http
@@ -15,6 +20,17 @@ spec:
       allowedRoutes:
         namespaces:
           from: Same
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: observability-gateway-options
+  namespace: observability
+data:
+  service: |
+    spec:
+      type: ClusterIP
 
 ---
 apiVersion: gateway.networking.k8s.io/v1
