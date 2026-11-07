@@ -86,7 +86,7 @@ spring:
       read-timeout: 10s
     serviceclient:
       pricing:
-        base-url: http://pricing-service
+        base-url: http://pricing-service/pricing-service
   devtools:
     remote:
       secret: bingus
