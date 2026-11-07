@@ -30,11 +30,8 @@
         <org.mapstruct.version>1.7.0.Beta2</org.mapstruct.version>
         <imageName>${project.artifactId}:${project.version}</imageName>
         <springdoc.version>3.1.1</springdoc.version>
-        <opentelemetry-instrumentation.version>2.33.1</opentelemetry-instrumentation.version>
         <testcontainers.version>2.0.5</testcontainers.version>
         <jacoco.version>0.8.16</jacoco.version>
-        <argLine></argLine>
-        <failsafeArgLine></failsafeArgLine>
     </properties>
 
     <dependencyManagement>
@@ -50,13 +47,6 @@
                 <groupId>io.awspring.cloud</groupId>
                 <artifactId>spring-cloud-aws-dependencies</artifactId>
                 <version>${spring-cloud-aws.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>io.opentelemetry.instrumentation</groupId>
-                <artifactId>opentelemetry-instrumentation-bom</artifactId>
-                <version>${opentelemetry-instrumentation.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -108,9 +98,10 @@
         </dependency>
 
         <dependency>
-            <groupId>io.opentelemetry.instrumentation</groupId>
-            <artifactId>opentelemetry-instrumentation-annotations</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-opentelemetry</artifactId>
         </dependency>
+
 
         <dependency>
             <groupId>org.flywaydb</groupId>

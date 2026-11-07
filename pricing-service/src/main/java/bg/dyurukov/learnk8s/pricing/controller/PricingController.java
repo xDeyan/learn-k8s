@@ -2,8 +2,7 @@ package bg.dyurukov.learnk8s.pricing.controller;
 
 import bg.dyurukov.learnk8s.pricing.api.PriceDto;
 import io.micrometer.core.annotation.Timed;
-import io.opentelemetry.instrumentation.annotations.AddingSpanAttributes;
-import io.opentelemetry.instrumentation.annotations.SpanAttribute;
+import io.micrometer.tracing.annotation.SpanTag;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,10 +27,9 @@ class PricingController {
             PriceDto.of("e38679bb-80c5-4f02-8cae-2ee2121e7496", 558.07)
     );
 
-    @AddingSpanAttributes
-    @GetMapping("/{productId}")
     @Timed
-    PriceDto getPrice(@SpanAttribute("pricing.product_id") @PathVariable UUID productId, @Parameter(hidden = true) @RequestHeader(HOST) String host) {
+    @GetMapping("/{productId}")
+    PriceDto getPrice(@SpanTag("pricing.product_id") @PathVariable UUID productId, @Parameter(hidden = true) @RequestHeader(HOST) String host) {
         log.info("Request for [productId={}] from [host={}]", productId, host);
         return PRICES.stream()
                 .filter(byProductId(productId))
