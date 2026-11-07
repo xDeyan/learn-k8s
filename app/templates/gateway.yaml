@@ -6,13 +6,6 @@ metadata:
     app: app-gateway
 spec:
   gatewayClassName: istio
-{{- if eq .Values.global.deploymentMode "local" }}
-  infrastructure:
-    parametersRef:
-      group: ""
-      kind: ConfigMap
-      name: app-gateway-options
-{{- end }}
   listeners:
     - name: http
       port: 8080
@@ -23,16 +16,17 @@ spec:
 
 {{- if eq .Values.global.deploymentMode "local" }}
 ---
-apiVersion: v1
-kind: ConfigMap
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
 metadata:
-  name: app-gateway-options
-data:
-  service: |
-    spec:
-      type: NodePort
-      ports:
-        - name: http
-          port: 8080
-          nodePort: 30001
+  name: public-to-app-gateway
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: public
+  to:
+    - group: ""
+      kind: Service
+      name: app-gateway-istio
 {{- end }}
