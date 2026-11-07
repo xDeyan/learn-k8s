@@ -2,6 +2,7 @@ package bg.dyurukov.learnk8s.pricing.controller;
 
 import bg.dyurukov.learnk8s.pricing.api.PriceDto;
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.tracing.annotation.ContinueSpan;
 import io.micrometer.tracing.annotation.SpanTag;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ class PricingController {
     );
 
     @Timed
+    @ContinueSpan
     @GetMapping("/{productId}")
     PriceDto getPrice(@SpanTag("pricing.product_id") @PathVariable UUID productId, @Parameter(hidden = true) @RequestHeader(HOST) String host) {
         log.info("Request for [productId={}] from [host={}]", productId, host);
