@@ -92,7 +92,7 @@ spring:
       secret: bingus
 
 #    aws:
-#      endpoint: http://localstack.tools.svc.cluster.local:4566
+#      endpoint: http://floci.tools.svc.cluster.local:4566
 #      region:
 #        static: eu-central-1
 #      s3:
