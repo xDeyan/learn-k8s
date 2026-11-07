@@ -31,7 +31,7 @@ class PricingController {
     @Timed
     @ContinueSpan
     @GetMapping("/{productId}")
-    PriceDto getPrice(@SpanTag("pricing.product_id") @PathVariable UUID productId, @Parameter(hidden = true) @RequestHeader(HOST) String host) {
+    public PriceDto getPrice(@SpanTag("pricing.product_id") @PathVariable UUID productId, @Parameter(hidden = true) @RequestHeader(HOST) String host) {
         log.info("Request for [productId={}] from [host={}]", productId, host);
         return PRICES.stream()
                 .filter(byProductId(productId))
