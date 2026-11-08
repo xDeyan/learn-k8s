@@ -3,11 +3,15 @@ version: 3
 tasks:
   all:setup:
     cmds:
-      - cmd: docker desktop start
-      - cmd: minikube start
+      - task: all:start
       - cmd: helm repo update
       - task: tofu:apply
       - task: tilt:up
+
+  all:start:
+    cmds:
+      - cmd: docker desktop start
+      - cmd: minikube start
 
   all:teardown:
     cmds:
