@@ -258,7 +258,7 @@
                     <image>
                         <pullPolicy>IF_NOT_PRESENT</pullPolicy>
                         <createdDate>now</createdDate>
-                        <builder>bellsoft/buildpacks.builder:musl</builder>
+                        <builder>paketobuildpacks/builder-jammy-base</builder>
                         <!-- Only way to override image name from command line -->
                         <name>${imageName}</name>
                         <env>
