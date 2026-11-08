@@ -274,7 +274,7 @@
                             <BPE_DELIM_JAVA_TOOL_OPTIONS xml:space="preserve"> </BPE_DELIM_JAVA_TOOL_OPTIONS>
                             <BPE_APPEND_JAVA_TOOL_OPTIONS>-XX:+EnableDynamicAgentLoading -Dspring.devtools.restart.enabled=true</BPE_APPEND_JAVA_TOOL_OPTIONS> <!-- agentlib:jdwp=transport=dt_socket,server=y,address=*:5005,suspend=n</BPE_APPEND_JAVA_TOOL_OPTIONS>-->
                             <!-- 1. Creates a custom jre with jlink => image size from 620MB to 405MB -->
-                            <BP_JVM_JLINK_ENABLED>true</BP_JVM_JLINK_ENABLED>-->
+<!--                            <BP_JVM_JLINK_ENABLED>true</BP_JVM_JLINK_ENABLED>&ndash;&gt;-->
                         </env>
                         <!-- Additional tags -->
                         <tags>
