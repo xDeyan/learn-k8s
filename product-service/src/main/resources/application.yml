@@ -91,19 +91,6 @@ spring:
     remote:
       secret: bingus
 
-#    aws:
-#      endpoint: http://floci.tools.svc.cluster.local:4566
-#      region:
-#        static: eu-central-1
-#      s3:
-#        path-style-access-enabled: true
-#      credentials:
-#        access-key: dfsdfsdf
-#        secret-key: dfsdfsdf
-
-#    correlation: '%correlationId{trace_id(32),span_id(16)}'
-#    correlation: '%esb(trace_id=%mdc{trace_id}, span_id=%mdc{span_id})'
-#    correlation: 'trace_id(32),span_id(16)'
 logging:
   level:
     sql: debug

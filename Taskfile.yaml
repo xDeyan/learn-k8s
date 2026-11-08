@@ -5,9 +5,15 @@ tasks:
     cmds:
       - cmd: docker desktop start
       - cmd: minikube start
-#      - cmd: helm repo update
-#      - task: tofu:apply
-#      - task: tilt:up
+      - cmd: helm repo update
+      - task: tofu:apply
+      - task: tilt:up
+
+  all:teardown:
+    cmds:
+      - cmd: minikube stop
+      - cmd: docker desktop stop
+      - cmd: wsl --shutdown
 
   tofu:init:
     desc: Initializes OpenTofu and installs the pinned providers
@@ -24,9 +30,9 @@ tasks:
         -auto-approve
 
   tofu:apply:aws:
-    desc: Deploys LocalStack before applying AWS resources
+    desc: Deploys Floci before applying AWS resources
     dir: terraform
-    cmd: tofu apply -target=module.infra.module.localstack.helm_release.localstack -auto-approve
+    cmd: tofu apply -target=module.infra.module.floci.helm_release.floci -auto-approve
 
   tofu:apply:infra:
 #    internal: true
@@ -49,17 +55,20 @@ tasks:
       TF_LOG: "DEBUG"
     cmd: tofu plan
 
+  flux:git:secret:
+    desc: Creates the Flux GitHub authentication Secret
+    silent: true
+    cmd: >-
+      flux create secret git github-auth
+      --namespace=flux-system
+      --url=https://github.com/xDeyan/learn-k8s.git
+      --username=xDeyan
+      --password={{ .GITHUB_ARGOCD_TOKEN }}
+
   terraform:apply:
     desc: Compatibility alias for tofu:apply
     cmds:
       - task: tofu:apply
-
-  all:down:
-    cmds:
-      - task: tilt:down
-      - task: lgtm:uninstall
-      - task: postgres:uninstall
-#      - cmd: minikube stop
 
   istio:install:
     desc: Installs Istio to the minikube cluster
