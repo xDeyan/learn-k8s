@@ -71,7 +71,7 @@ jobs:
             pricing-service/target/*.jar*
           if-no-files-found: error
 
-  build-images:
+  build-image:
     if: github.event_name == 'push'
     needs: build-and-test
     runs-on: ubuntu-latest
