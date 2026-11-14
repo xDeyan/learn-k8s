@@ -233,6 +233,11 @@
                             <image>
                                 <name>${ghcr.registry}/${ghcr.owner}/${imageName}</name>
                                 <publish>true</publish>
+                                <buildCache>
+                                    <bind>
+                                        <source>${env.BUILDPACK_CACHE_DIR}/${project.artifactId}</source>
+                                    </bind>
+                                </buildCache>
                                 <tags>
                                     <tag>${ghcr.registry}/${ghcr.owner}/${project.artifactId}:latest</tag>
                                 </tags>

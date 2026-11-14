@@ -1,4 +1,4 @@
-package bg.dyurukov.learnk8s.product;
+package bg.dyurukov.learnk8s.product.config;
 
 import org.springframework.boot.actuate.autoconfigure.web.ManagementContextConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnCloudPlatform;
