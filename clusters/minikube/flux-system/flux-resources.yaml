@@ -18,7 +18,7 @@ metadata:
   name: app
   namespace: flux-system
 spec:
-  interval: 5m
+  interval: 3m
   releaseName: app
   targetNamespace: default
   install:
@@ -91,8 +91,8 @@ metadata:
   name: app-images
   namespace: flux-system
 spec:
-  interval: 10m
-  policyChangeDelay: 2m
+  interval: 3m
+  policyChangeDelay: 45s
   sourceRef:
     kind: GitRepository
     name: learn-k8s
