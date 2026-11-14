@@ -7,22 +7,15 @@ import bg.dyurukov.learnk8s.product.domain.ProductRepository;
 import bg.dyurukov.learnk8s.product.domain.ProductService;
 import bg.dyurukov.learnk8s.product.mapper.ProductMapper;
 import bg.dyurukov.learnk8s.product.pricing.PricingClient;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.spi.ILoggingEvent;
-import ch.qos.logback.core.Appender;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.List;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/products")
@@ -77,38 +70,5 @@ class ProductApiV1 {
     @DeleteMapping
     void deleteAll() {
         productRepository.deleteAllInBatch();
-    }
-
-    @GetMapping("/appenders")
-    void asd() {
-        LoggerContext loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-
-        Set<String> appenders = new HashSet<>();
-        for (Logger logger : loggerContext.getLoggerList()) {
-
-            Iterator<Appender<ILoggingEvent>> appenderIterator = logger.iteratorForAppenders();
-
-
-            while (appenderIterator.hasNext()) {
-                Appender<ILoggingEvent> appender = appenderIterator.next();
-                appenders.add(String.format("Name: %s, Class: %s", appender.getName(), appender.getClass()));
-            }
-        }
-
-        log.info("Appenders: {}", String.join("\n", appenders));
-    }
-
-    @PostMapping("/generate")
-    void generate(@RequestBody int count) {
-        List<Product> products = IntStream.range(0, count)
-                .mapToObj(i -> Product.builder()
-                        .name(UUID.randomUUID().toString())
-                        .build())
-                .toList();
-
-        long start = System.currentTimeMillis();
-        productRepository.saveAll(products);
-
-        log.info("Persisted {} products in {}ms", count, System.currentTimeMillis() - start);
     }
 }

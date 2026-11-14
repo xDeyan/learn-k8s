@@ -7,6 +7,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
 
 import static lombok.AccessLevel.PROTECTED;
+import static org.hibernate.annotations.UuidGenerator.Style.VERSION_7;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Product {
 
     @Id
-    @UuidGenerator
+    @UuidGenerator(style = VERSION_7)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
