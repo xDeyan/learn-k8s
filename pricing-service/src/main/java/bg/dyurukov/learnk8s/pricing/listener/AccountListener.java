@@ -13,6 +13,6 @@ public class AccountListener implements Consumer<byte[]> {
 
     @Override
     public void accept(byte[] bytes) {
-        log.info("Received a message... {}", new String(bytes, UTF_8));
+        log.info("Received a message.... {}", new String(bytes, UTF_8));
     }
 }
