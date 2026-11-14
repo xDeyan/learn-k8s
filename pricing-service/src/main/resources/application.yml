@@ -12,6 +12,15 @@ spring:
   application:
     name: pricing-service
 
+  web:
+    error:
+      include-message: always
+      whitelabel:
+        enabled: false
+  mvc:
+    problemdetails:
+      enabled: true
+
   autoconfigure:
     exclude:
       - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
@@ -19,9 +28,6 @@ spring:
   docker:
     compose:
       enabled: false
-  mvc:
-    problemdetails:
-      enabled: true
 
   kafka:
     admin:
@@ -55,10 +61,6 @@ spring:
           group: ${spring.application.name}
           consumer:
             use-native-decoding: true
-
-  web:
-    error:
-      include-message: always
 
 logging:
   pattern:

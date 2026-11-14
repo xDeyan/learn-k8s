@@ -12,6 +12,16 @@ spring:
   application:
     name: product-service
 
+  web:
+    error:
+      include-message: always
+      whitelabel:
+        enabled: false
+
+  mvc:
+    problemdetails:
+      enabled: true
+
   docker:
     compose:
       lifecycle-management: start_and_stop
