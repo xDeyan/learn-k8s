@@ -6,7 +6,6 @@ metadata:
 data:
   SERVER_FORWARDHEADERSSTRATEGY: "framework"
   SPRING_MVC_FORWARDEDHEADERS_USEFORWARDEDPREFIX: "true"
-  MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE: "health,info,openapi"
   MANAGEMENT_ENDPOINT_INFO_ENABLED: "true"
   MANAGEMENT_INFO_DEFAULTS_ENABLED: "true"
   MANAGEMENT_OBSERVATIONS_ANNOTATIONS_ENABLED: "true"
@@ -14,7 +13,6 @@ data:
   MANAGEMENT_DEFAULTS_METRICS_EXPORT_ENABLED: "false"
   MANAGEMENT_TRACING_EXPORT_ENABLED: "false"
   SPRINGDOC_SHOWACTUATOR: "true"
-  SPRINGDOC_USE_MANAGEMENT_PORT: "false"
   SPRINGDOC_SWAGGERUI_CONFIGURL: "/services/${spring.application.name}/v3/api-docs/swagger-config"
   SPRINGDOC_SWAGGERUI_URL: "/services/${spring.application.name}/v3/api-docs"
   SPRING_KAFKA_BOOTSTRAPSERVERS: "platform-kafka-kafka-bootstrap.kafka.svc.cluster.local:9092"
