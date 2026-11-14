@@ -67,8 +67,8 @@ jobs:
         with:
           name: packaged-service-artifacts
           path: |
-            product-service/target/*.jar
-            pricing-service/target/*.jar
+            product-service/target/*.jar*
+            pricing-service/target/*.jar*
           if-no-files-found: error
 
   build-images:
